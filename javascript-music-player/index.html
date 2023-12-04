@@ -1,0 +1,107 @@
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta
+        name="description"
+        content="Player de música by Iago"
+      />
+      <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+      <link rel="stylesheet" href="./styles/style.css" />
+      <script
+        src="https://kit.fontawesome.com/585143586a.js"
+        crossorigin="anonymous"
+      ></script>
+      <script defer src="./script.js"></script>
+      <title>Teste técnico</title>
+    </head>
+    <body>
+      <section id="AllInBody">
+        <div id="ContentWarpper">
+          <div id="WholeCardContainer">
+            <div id="addSongModal" class="modal">
+              <div class="modal-content">
+                <span class="close" id="closeModalBtn">&times;</span>
+                <h2>Adicione uma nova música</h2> 
+                <!-- Song form -->
+                <form id="songForm">
+                  <label for="songTitle" class="transparent-label">Título:</label>
+                  <input type="text" id="songTitle" name="songTitle" required placeholder="Enter title">
+            
+                  <label for="songArtist" class="transparent-label">Artista:</label>
+                  <input type="text" id="songArtist" name="songArtist" required placeholder="Enter artist">
+            
+                  <label for="songSrc" class="transparent-label">Song Source:</label>
+                  <input type="text" id="songSrc" name="songSrc" required placeholder="Enter song source">
+            
+                  <label for="imgSrc" class="transparent-label">Image Source:</label>
+                  <input type="text" id="imgSrc" name="imgSrc" required placeholder="Enter image source">
+            
+                  <button type="button" id="addSongBtn">Adicionar</button>
+                </form>
+              </div>
+            </div>
+             
+            <div id="MusicDesc">
+              <h2 id="SongName"></h2>
+              <p id="Artist"></p>
+            </div>
+           <!-- Modal HTML -->
+          
+
+            <div id="MusicImg">
+              <img draggable="false" id="SongImg" alt="Imagem do albúm" />
+            </div>
+           
+            <audio></audio>
+
+            <div id="Progress_elements">
+              <div id="Progressduration">
+                <div id="Start">0 : 0</div>
+                <div id="End">4 : 8</div>
+              </div>
+              <div id="ProgressMeterContainer">
+                <div id="ProgrssMeterChild"></div>
+              </div>
+            </div>
+            <div id="Count">
+             <a>              
+              <p>Quantas vezes ouviu (hoje): <span id="CountNumber">0 </span> <i id="CountIcon" class="fas fa-heart"></i></p>
+              </a>
+              <div id="TimesListened">
+                <p>Quantas vezes ouviu (anterior a hoje): <span id="TimesListenedNumber">0</span>
+                  <i id="CountIcon" class="fas fa-heart"></i></p>
+              </div>
+              
+            </div>
+            
+
+            <div id="MusicControls">
+              <div class="control" title="Previous Song">
+                <i id="Previous" class="fas fa-backward"></i>
+              </div>
+              <div class="control" title="Pause/ play">
+                <i id="PausePlay" class="fas fa-play"></i>
+              </div>
+              <div class="control" title="Next Music">
+                <i id="Next" class="fas fa-forward"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer>
+        Copyright @
+        <a
+          href="https://github.com/iagoholekdev"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Iago Holek
+        </a>
+        <span id="Year"></span>
+      </footer>
+    </body>
+  </html>
