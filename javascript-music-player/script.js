@@ -224,8 +224,9 @@ nextButton.addEventListener("click", () => {
   if (index < songDataBase.length - 1) {
     hasPlayedSongAlready = false;
     loadMusic(index++);
+    pause();
+    playPauseButton.classList.replace("fa-pause", "fa-play");
     musicStats();
-    play(true);
   } else {
     pause();
   }
@@ -234,8 +235,9 @@ nextButton.addEventListener("click", () => {
 previousButton.addEventListener("click", () => {
   if (index > 0) {
     loadMusic(index--);
+    pause();
+    playPauseButton.classList.replace("fa-pause", "fa-play");
     musicStats();
-    play(true);
   } else {
     pause();
   }
