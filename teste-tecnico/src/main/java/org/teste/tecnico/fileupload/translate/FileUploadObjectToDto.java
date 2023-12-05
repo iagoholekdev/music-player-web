@@ -11,7 +11,7 @@ public class FileUploadObjectToDto {
 
     public static List<FileUploadDTO> toDto(List<Object[]> list) {
         return list.stream()
-                .map(row -> new FileUploadDTO((String) row[0], (String) row[1]))
+                .map(row -> new FileUploadDTO(Long.parseLong(row[0].toString()), (String) row[1], (String) row[2]))
                 .collect(Collectors.toList());
 
     }

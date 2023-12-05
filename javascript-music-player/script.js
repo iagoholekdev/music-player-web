@@ -38,100 +38,131 @@ addSongBtn.addEventListener('click', () => {
   const songSrc = document.getElementById('songSrc').value;
   const imgSrc = document.getElementById('imgSrc').value;
 
-  const newSong = {
-    pathToSong: songSrc,
-    pathToImage: imgSrc,
-    artistName: artist,
-    songName: title
-};
+  if (!title || !artist || !songSrc || !imgSrc) {
+    // Show SweetAlert for invalid data
+    Swal.fire({
+      title: 'Dados inválidos',
+      text: 'Por favor, preencha todos os campos corretamente.',
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  } else {
+    const newSong = {
+      pathToSong: songSrc,
+      pathToImage: imgSrc,
+      artistName: artist,
+      songName: title
+    };
 
-  console.log(newSong);
+    Swal.fire({
+      title: 'Aguarde...',
+      text: 'Enviando música...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      willOpen: () => {
+        Swal.showLoading();
+      }
+    });
 
-  fetch('http://localhost:8080/fileupload/sendnewmusic', {
-      method: 'POST',
-      body: JSON.stringify(newSong),
-      headers: {
-        'Content-Type': 'application/json',
-    },
-  })
-  .then(response => {
-      // Handle the response from the backend
-      console.log('Upload successful:', response);
-  })
-  .then(() => {
-      // Fetch the updated data immediately after sending new music
+    fetch('http://localhost:8080/fileupload/sendnewmusic', {
+        method: 'POST',
+        body: JSON.stringify(newSong),
+        headers: {
+          'Content-Type': 'application/json',
+      },
+    })
+    .then(response => {
+   
+        Swal.close();
+
+        Swal.fire({
+          title: 'Música enviada com sucesso!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+
+    })
+    .then(() => {
         fetch('http://localhost:8080/fileupload/upload', {
           method: 'POST',
           body: JSON.stringify(newSong),
           headers: {
               'Content-Type': 'application/json',
           },
-           })
-          .then(response => response.json())
-          .then(updatedData => {
-              // Handle the updated data received from the server
-              console.log('Updated data from server:', updatedData);
+        })
+        .then(response => response.json())
+        .then(updatedData => {
+            // Handle the updated data received from the server
+            console.log('Updated data from server:', updatedData);
 
-              // Update the songDataBase array with the saved file
-              songDataBase = [
-                  ...songDataBase,
-                  {
-                      songSrc: updatedData.pathToSong,
-                      title: updatedData.songName,
-                      artist: updatedData.artistName,
-                      imgSrc: updatedData.pathToImage,
-                  }
-              ];
+            // Update the songDataBase array with the saved file
+            songDataBase = [
+                ...songDataBase,
+                {
+                    songSrc: updatedData.pathToSong,
+                    title: updatedData.songName,
+                    artist: updatedData.artistName,
+                    imgSrc: updatedData.pathToImage,
+                }
+            ];
 
-              // Now you can use the updated songDataBase array as needed
-              console.log('Updated songDataBase:', songDataBase);
-          })
-          .catch(error => {
-              console.error('Error fetching updated data:', error);
-          });
-  })
-  .catch(error => {
-      console.error('Error during upload:', error);
-  });
-});
+            document.getElementById('songTitle').value = '';
+            document.getElementById('songArtist').value = ''; 
+            document.getElementById('songSrc').value = '';
+            document.getElementById('imgSrc').value = '';
+            window.location.reload();
+    
+        })
+        .catch(error => {
+            console.error('Error fetching updated data:', error);
+        });
+    })
+    .catch(error => {
+        Swal.close();
 
-
-document.addEventListener("DOMContentLoaded", () => {
-  loadObject();
-  musicStats();
+        Swal.fire({
+          title: 'Erro durante o envio!',
+          text: 'Por favor, tente novamente mais tarde.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+    });
+  }
 });
 
 loadObject = () => {
-
   fetch(`http://localhost:8080/fileupload/getfiles/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Handle the updated data received from the server
-        console.log('Updated data from server:', data);
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (Array.isArray(data) && data.length > 0) {
+        songDataBase = data.map(item => ({
+          songSrc: item.pathToSong,
+          title: item.songName,
+          artist: item.artistName,
+          imgSrc: item.pathToImage,
+        }));
 
-        // Update the songDataBase array with the saved file
-        if (Array.isArray(data)) {
-          // Update the songDataBase array with the saved file
-          songDataBase = [
-              ...songDataBase,
-              {
-                  songSrc: data[0].pathToSong,
-                  title: data[0].songName,
-                  artist: data[0].artistName,
-                  imgSrc: data[0].pathToImage,
-              }
-          ];
+        index = 0;
+        loadMusic();
+        musicStats();
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+};
 
-        // Now you can use the updated songDataBase array as needed
-        console.log('loaded songDataBase:', songDataBase);
-    }})
 
-}
+document.addEventListener("DOMContentLoaded", () => {
+  loadObject(); 
+});
+
+
 
 const musicStats = () => {
   const musicDescElement = document.getElementById('MusicDesc');
@@ -159,11 +190,9 @@ const musicStats = () => {
         .then(data => {
           console.log(data);
           const [countNumber, timesListened] = data;
-
-          // Update the CountNumber element
+      
           document.getElementById('CountNumber').textContent = countNumber.toString();
 
-          // Update the TimesListenedNumber element
           document.getElementById('TimesListenedNumber').textContent = timesListened.toString();
         })
         .catch(error => {
@@ -195,7 +224,8 @@ nextButton.addEventListener("click", () => {
   if (index < songDataBase.length - 1) {
     hasPlayedSongAlready = false;
     loadMusic(index++);
-    play();
+    musicStats();
+    play(true);
   } else {
     pause();
   }
@@ -204,7 +234,8 @@ nextButton.addEventListener("click", () => {
 previousButton.addEventListener("click", () => {
   if (index > 0) {
     loadMusic(index--);
-    play();
+    musicStats();
+    play(true);
   } else {
     pause();
   }
@@ -212,19 +243,20 @@ previousButton.addEventListener("click", () => {
 
 
 
-const play = () => {
+const play = (buttonPressed = false) => {
   isPlaying = true;
   audio.play();
   playPauseButton.classList.replace("fa-play", "fa-pause");
   songImg.classList.add("anime");
-  //if (!isPlaying) {
-    hasPlayedSongAlready = true;
+
+  if (!buttonPressed) {
     const musicDTO = {
       trackName: songName.textContent,
       artistName: artist.textContent,
       dateListened: new Date().toISOString().split('T')[0],
     };
 
+  
     fetch('http://localhost:8080/music/sendmusic', {
       method: 'POST',
       headers: {
@@ -234,7 +266,8 @@ const play = () => {
     })
     .then(response => {
       musicStats();
-    });
+    })
+ };
 //  }
 };
 
@@ -277,16 +310,3 @@ progressBar.addEventListener("click", (event) => {
 });
 
 document.querySelector("#Year").innerHTML = currentYear;
-
-//mainCard.addEventListener("mouseover", (event) => {
- // const xAxis = (window.innerWidth / 2 - event.pageX) / 15;
-  //const yAxis = (window.innerHeight / 2 - event.pageY) / 15;
- // mainCard.style.transform = `rotateX(${yAxis}deg) rotateY(${xAxis}deg)`;
- // songImg.style.transform = `rotate(${xAxis}deg)`;
- // controlButtons.style.transform = `rotate(${xAxis}deg)`;//
-//});
-//mainCard.addEventListener("mouseleave", () => {
-//  mainCard.style.transform = "rotateX(0deg) rotateY(0deg)";
- // songImg.style.transform = "rotate(0deg)";
- // controlButtons.style.transform = "rotate(0deg)";//
-//});

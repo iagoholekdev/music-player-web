@@ -8,6 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 
 @RequestScoped
 public class MusicDAO implements Crudable<MusicDTO> {
@@ -20,7 +21,7 @@ public class MusicDAO implements Crudable<MusicDTO> {
         try {
             Music music = Music.builder()
                     .artistName(musicDTO.getArtistName())
-                    .dateListened(musicDTO.getDateListened())
+                    .dateListened(LocalDate.now())
                     .trackName(musicDTO.getTrackName())
                     .build();
 

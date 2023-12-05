@@ -12,7 +12,7 @@ public class FileUploadRepository {
     EntityManager entityManager;
 
     public List<Object[]> getAllEntries() {
-            String query = "SELECT ARTIST_NAME, SONG_NAME FROM FILEUPLOAD ORDER BY ID";
+            String query = "SELECT ID, ARTIST_NAME, SONG_NAME FROM FILEUPLOAD ORDER BY ID";
             return this.entityManager.createNativeQuery(query).getResultList();
     }
 

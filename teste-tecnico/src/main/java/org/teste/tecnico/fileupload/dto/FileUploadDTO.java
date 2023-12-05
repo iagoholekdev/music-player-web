@@ -29,7 +29,8 @@ public class FileUploadDTO {
         this.songName = songName;
     }
 
-    public FileUploadDTO(String artistName, String songName) {
+    public FileUploadDTO(Long id, String artistName, String songName) {
+        this.id = id;
         this.artistName = artistName;
         this.songName = songName;
     }
